@@ -1,4 +1,4 @@
-from flask import Flask, jsonify
+from flask import Flask, jsonify, request
 import os
 from pathlib import Path
 
@@ -93,6 +93,24 @@ def readyz():
             "error": str(e),
             "counter_path": str(COUNTER_PATH),
         }), 503
+
+
+@app.route("/admin/reset", methods=["POST"])
+def admin_reset():
+    """
+    Admin-only endpoint: resets the counter back to 0.
+    Requires header:
+      X-Admin-Token: <token>
+    The valid token is provided via the ADMIN_TOKEN environment variable.
+    """
+    token = request.headers.get("X-Admin-Token")
+    admin_token = os.getenv("ADMIN_TOKEN")
+
+    if not admin_token or admin_token != token:
+        return jsonify({"error": "unauthorized"}), 401
+
+    write_counter(0)
+    return jsonify({"message": "counter reset"}), 200
 
 
 if __name__ == "__main__":
