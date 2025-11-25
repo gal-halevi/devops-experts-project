@@ -1,0 +1,8 @@
+# Pycharm
+.idea/
+
+# Virtual envs
+.venv/
+
+# macOS
+.DS_Store
