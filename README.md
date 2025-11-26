@@ -45,7 +45,7 @@ Secrets should be created with `kubectl create secret` or a secrets manager
 ## 📚 Further Documentation
 
 - **Docker + local development:**  
-  👉 `app/README.md`
+  👉 [app/README.md](app/README.md)
 
 - **Kubernetes deployment instructions:**  
-  👉 `k8s/README.md`
+  👉 [k8s/README.md](k8s/README.md)

@@ -80,5 +80,5 @@ curl -X POST \
 
 See the documentation in:
 
-👉 `../k8s/README.md`
+👉 [../k8s/README.md](../k8s/README.md)
 
