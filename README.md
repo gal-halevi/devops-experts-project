@@ -49,3 +49,18 @@ Secrets should be created with `kubectl create secret` or a secrets manager
 
 - **Kubernetes deployment instructions:**  
   👉 [k8s/README.md](k8s/README.md)
+
+
+## Git Workflow
+
+This project follows a feature-branch workflow:
+
+- `main` is always deployable
+- All changes are developed in feature branches
+- Pull Requests are used for integration
+- CI pipelines validate changes before merging
+
+Branch naming:
+- `feature/*` – new functionality
+- `bugfix/*` – non-urgent fixes
+- `hotfix/*` – urgent production fixes
