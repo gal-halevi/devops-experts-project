@@ -17,6 +17,7 @@ spec:
       containers:
         - name: {{ include "flask-counter.name" . }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
             - name: http
               containerPort: {{ .Values.container.port }}
