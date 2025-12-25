@@ -3,7 +3,7 @@ kind: Service
 metadata:
   name: {{ include "flask-counter.fullname" . }}
   labels:
-    {{ include "flask-counter.labels" . | nindent 4 }}
+    {{- include "flask-counter.labels" . | nindent 4 }}
 spec:
   type: {{ .Values.service.type }}
   selector:

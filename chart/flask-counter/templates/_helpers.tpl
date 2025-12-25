@@ -12,7 +12,7 @@ app.kubernetes.io/instance: {{ .Release.Name | quote }}
 {{- end -}}
 
 {{- define "flask-counter.labels" -}}
-{{ include "flask-counter.selectorLabels" . }}
+{{- include "flask-counter.selectorLabels" . }}
 app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
 app.kubernetes.io/managed-by: {{ .Release.Service | quote }}
 {{- end -}}

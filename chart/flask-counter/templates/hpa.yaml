@@ -4,7 +4,7 @@ kind: HorizontalPodAutoscaler
 metadata:
   name: {{ include "flask-counter.fullname" . }}-hpa
   labels:
-    {{ include "flask-counter.labels" . | nindent 4 }}
+    {{- include "flask-counter.labels" . | nindent 4 }}
 spec:
   minReplicas: {{ .Values.autoscaling.minReplicas }}
   maxReplicas: {{ .Values.autoscaling.maxReplicas }}
