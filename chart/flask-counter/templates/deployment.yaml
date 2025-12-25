@@ -40,8 +40,5 @@ spec:
             periodSeconds: 5
             failureThreshold: 3
           resources:
-            requests:
-              cpu: 50m
-            limits:
-              cpu: 200m
+            {{- toYaml .Values.resources | nindent 12 }}
 

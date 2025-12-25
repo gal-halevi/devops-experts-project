@@ -27,3 +27,9 @@ autoscaling:
   minReplicas: 1
   maxReplicas: 5
   averageUtilization: 50
+
+resources:
+  requests:
+    cpu: 50m
+  limits:
+    cpu: 200m
