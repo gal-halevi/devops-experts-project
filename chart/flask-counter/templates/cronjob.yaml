@@ -15,6 +15,6 @@ spec:
             - name: auto-inc
               image: curlimages/curl:8.17.0
               command: ["sh", "-c"]
-              args: ["curl -X POST http://{{ include "flask-counter.fullname" . }}/inc"]
+              args: ["curl -X POST http://{{ include "flask-counter.fullname" . }}:{{ .Values.service.port }}/inc"]
           restartPolicy: OnFailure
 {{- end }}
