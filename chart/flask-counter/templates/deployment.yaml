@@ -3,16 +3,16 @@ kind: Deployment
 metadata:
   name: {{ include "flask-counter.fullname" . }}
   labels:
-    {{ include "flask-counter.labels" . | indent 4 }}
+    {{ include "flask-counter.labels" . | nindent 4 }}
 spec:
   selector:
     matchLabels:
-      {{ include "flask-counter.labels" . | indent 6 }}
+      {{ include "flask-counter.labels" . | nindent 6 }}
   replicas: {{ .Values.replicaCount }}
   template:
     metadata:
       labels:
-        {{ include "flask-counter.labels" . | indent 8 }}
+        {{ include "flask-counter.labels" . | nindent 8 }}
     spec:
       containers:
         - name: {{ include "flask-counter.name" . }}
