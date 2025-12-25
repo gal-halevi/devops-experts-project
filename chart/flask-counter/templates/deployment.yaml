@@ -13,6 +13,9 @@ spec:
     metadata:
       labels:
         {{ include "flask-counter.labels" . | nindent 8 }}
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/app-configmap.yaml") . | sha256sum }}
+        checksum/secret: {{ include (print $.Template.BasePath "/secret.yaml") . | sha256sum }}
     spec:
       containers:
         - name: {{ include "flask-counter.name" . }}
