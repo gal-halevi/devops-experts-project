@@ -1,6 +1,4 @@
 replicaCount: 1
-labels:
-  app: counter-app
 
 container:
   port: 5000
