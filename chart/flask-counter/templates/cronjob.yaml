@@ -3,6 +3,8 @@ apiVersion: batch/v1
 kind: CronJob
 metadata:
   name: {{ include "flask-counter.fullname" . }}-cron
+  labels:
+    {{ include "flask-counter.labels" . | nindent 4 }}
 spec:
   schedule: {{ .Values.cronjob.schedule | quote }}
   successfulJobsHistoryLimit: 3
