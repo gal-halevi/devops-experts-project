@@ -3,7 +3,7 @@
 {{- end -}}
 
 {{- define "flask-counter.fullname" -}}
-{{- printf "%s-%s" .Release.Name .Chart.Name -}}
+{{- printf "%s-%s" .Release.Name (include "flask-counter.name" .) -}}
 {{- end -}}
 
 {{- define "flask-counter.selectorLabels" -}}
