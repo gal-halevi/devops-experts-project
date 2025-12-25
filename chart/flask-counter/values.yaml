@@ -23,3 +23,9 @@ secret:
 cronjob:
   enabled: true
   schedule: "* * * * *" # every minute
+
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 5
+  averageUtilization: 50
