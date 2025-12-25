@@ -8,7 +8,6 @@ container:
 image:
   repository: galhalevi/counter-app
   tag: "1.2"
-  pullPolicy: IfNotPresent
 
 service:
   type: NodePort
