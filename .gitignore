@@ -1,8 +1,13 @@
-# Pycharm
+# IDE files
 .idea/
+.vscode/
 
 # Virtual envs
 .venv/
 
 # macOS
 .DS_Store
+
+# pytest cache
+.pytest_cache/
+__pycache__
