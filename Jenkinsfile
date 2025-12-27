@@ -81,9 +81,6 @@ pipeline {
                         sh """
                             set -eu
 
-                            # Install curl (docker:*-cli is Alpine-based)
-                            apk add --no-cache curl >/dev/null
-
                             echo "\$DH_TOKEN" | docker login -u "\$DH_USER" --password-stdin
 
                             docker build \\
@@ -102,10 +99,12 @@ pipeline {
                             trap cleanup EXIT
 
                             # Run container on an available port on host and check health endpoint
-                            cid=\$(docker run -d -p 0:5000 ${imageRef})
-                            # Get the mapped host port
-                            hostPort=\$(docker port "\$cid" 5000/tcp | cut -d: -f2)
-                            curl -fsS --retry-connrefused --retry 5 http://localhost:\$hostPort/healthz
+                            cid=\$(docker run -d ${imageRef})
+
+                            # Curl from a helper container that shares the app container network
+                            docker run --rm --network container:\$cid curlimages/curl:8.17.0 \\
+                            -fsS --retry-connrefused --retry 5 \\
+                            http://localhost:5000/healthz
 
                             docker push ${imageRef}
                             docker push ${env.DOCKER_IMAGE}:${branchBuild}
