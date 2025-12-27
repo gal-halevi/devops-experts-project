@@ -105,7 +105,7 @@ pipeline {
                             cid=\$(docker run -d -p 0:5000 ${imageRef})
                             # Get the mapped host port
                             hostPort=\$(docker port "\$cid" 5000/tcp | cut -d: -f2)
-                            curl -fsS --retry-connrefused --retry 5 http://localhost:$hostPort/healthz
+                            curl -fsS --retry-connrefused --retry 5 http://localhost:\$hostPort/healthz
 
                             docker push ${imageRef}
                             docker push ${env.DOCKER_IMAGE}:${branchBuild}
