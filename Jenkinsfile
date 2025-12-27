@@ -101,8 +101,11 @@ pipeline {
                             }
                             trap cleanup EXIT
 
-                            cid=\$(docker run -d -p 5000:5000 ${imageRef})
-                            curl -fsS --retry-connrefused --retry 5 http://localhost:5000/healthz
+                            # Run container on an available port on host and check health endpoint
+                            cid=\$(docker run -d -p 0:5000 ${imageRef})
+                            # Get the mapped host port
+                            hostPort=\$(docker port "\$cid" 5000/tcp | cut -d: -f2)
+                            curl -fsS --retry-connrefused --retry 5 http://localhost:$hostPort/healthz
 
                             docker push ${imageRef}
                             docker push ${env.DOCKER_IMAGE}:${branchBuild}
