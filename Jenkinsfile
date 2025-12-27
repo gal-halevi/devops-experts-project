@@ -71,7 +71,8 @@ pipeline {
 
                 script {
                     def shaTag = "sha-${env.GIT_COMMIT.take(7)}"
-                    def branchBuild = "${env.BRANCH_NAME}-b${env.BUILD_NUMBER}"
+                    def safeBranchName = env.BRANCH_NAME.toLowerCase().replaceAll('/', '-')
+                    def branchBuild = "${safeBranchName}-b${env.BUILD_NUMBER}"
                     def latestTag = 'latest'
 
                     def imageRef = "${env.DOCKER_IMAGE}:${shaTag}"
