@@ -25,10 +25,15 @@ pipeline {
 
                 sh '''
                     set -eu
+
                     mkdir -p reports
+                    export PIP_CACHE_DIR="$PWD/.pip-cache"
+                    mkdir -p "$PIP_CACHE_DIR"
+
                     rm -rf .venv
                     python -m venv .venv
                     . .venv/bin/activate
+                    
                     python -m pip install -U pip
                     python -m pip install -r src/requirements-dev.txt
 
