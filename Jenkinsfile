@@ -120,5 +120,28 @@ pipeline {
                 }
             }
         }
-    }
+
+        stage("Deploy to Kubernetes") {
+            agent {
+                label 'Mac'
+            }
+            steps {
+                checkout scm
+                script {
+                    def shaTag = "sha-${env.GIT_COMMIT.take(7)}"
+                    sh """
+                        set -eu
+
+                        kubectl config current-context
+                        kubectl get nodes
+
+                        helm upgrade --install counter-app ./k8s/chart/flask-counter \\
+                            --namespace default --create-namespace \\
+                            --set image.repository=${env.DOCKER_IMAGE} \\
+                            --set image.tag=${shaTag} \\
+                            --wait --timeout 2m
+                    """
+                }
+            }
+        }
 }
