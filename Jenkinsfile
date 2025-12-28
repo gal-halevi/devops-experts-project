@@ -16,6 +16,7 @@ pipeline {
     stages {
         stage("Tests") {
             agent {
+                label 'docker'
                 docker {
                     image 'python:3.12-slim'
                 }
@@ -61,6 +62,7 @@ pipeline {
         }
         stage("Build & Push Docker Image") {
             agent {
+                label 'docker'
                 docker {
                     image 'docker:27-cli'
                     args '-v /var/run/docker.sock:/var/run/docker.sock'
