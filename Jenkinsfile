@@ -137,7 +137,7 @@ pipeline {
                         kubectl config current-context
                         kubectl get nodes
 
-                        helm upgrade --install counter-app ./k8s/chart/flask-counter \\
+                        helm upgrade --install counter-app ./chart/flask-counter \\
                             --namespace default --create-namespace \\
                             --set image.repository=${env.DOCKER_IMAGE} \\
                             --set image.tag=${shaTag} \\
