@@ -61,6 +61,9 @@ pipeline {
             }
         }
         stage("Build & Push Docker Image") {
+            when {
+                not { changeRequest()}
+            }
             agent {
                 docker {
                     label 'docker'
@@ -124,6 +127,9 @@ pipeline {
         }
 
         stage("Deploy to Kubernetes") {
+            when {
+                branch 'main'
+            }
             agent {
                 label 'Mac'
             }
