@@ -62,7 +62,7 @@ pipeline {
         }
         stage("Build & Push Docker Image") {
             when {
-                not { changeRequest()}
+                not { changeRequest() }
             }
             agent {
                 docker {
