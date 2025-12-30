@@ -17,6 +17,7 @@ pipeline {
         stage("Tests") {
             agent {
                 docker {
+                    label 'docker'
                     image 'python:3.12-slim'
                 }
             }
@@ -60,8 +61,12 @@ pipeline {
             }
         }
         stage("Build & Push Docker Image") {
+            when {
+                not { changeRequest() }
+            }
             agent {
                 docker {
+                    label 'docker'
                     image 'docker:27-cli'
                     args '-v /var/run/docker.sock:/var/run/docker.sock'
                 }
@@ -71,8 +76,6 @@ pipeline {
 
                 script {
                     def shaTag = "sha-${env.GIT_COMMIT.take(7)}"
-                    def safeBranchName = env.BRANCH_NAME.toLowerCase().replaceAll('/', '-')
-                    def branchBuild = "${safeBranchName}-b${env.BUILD_NUMBER}"
                     def latestTag = 'latest'
 
                     def imageRef = "${env.DOCKER_IMAGE}:${shaTag}"
@@ -85,7 +88,6 @@ pipeline {
 
                             docker build \\
                                 --tag ${imageRef} \\
-                                --tag ${env.DOCKER_IMAGE}:${branchBuild} \\
                                 --tag ${env.DOCKER_IMAGE}:${latestTag} \\
                                 src/
 
@@ -107,7 +109,6 @@ pipeline {
                             http://localhost:5000/healthz
 
                             docker push ${imageRef}
-                            docker push ${env.DOCKER_IMAGE}:${branchBuild}
 
                             # Push 'latest' only from main
                             if [ "${env.BRANCH_NAME}" = "main" ]; then
@@ -117,6 +118,33 @@ pipeline {
                             fi
                         """
                     }
+                }
+            }
+        }
+
+        stage("Deploy to Kubernetes") {
+            when {
+                branch 'main'
+            }
+            agent {
+                label 'Mac'
+            }
+            steps {
+                checkout scm
+                script {
+                    def shaTag = "sha-${env.GIT_COMMIT.take(7)}"
+                    sh """
+                        set -eu
+
+                        kubectl config current-context
+                        kubectl get nodes
+
+                        helm upgrade --install counter-app ./chart/flask-counter \\
+                            --namespace default --create-namespace \\
+                            --set image.repository=${env.DOCKER_IMAGE} \\
+                            --set image.tag=${shaTag} \\
+                            --wait --timeout 2m
+                    """
                 }
             }
         }
