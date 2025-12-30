@@ -76,8 +76,6 @@ pipeline {
 
                 script {
                     def shaTag = "sha-${env.GIT_COMMIT.take(7)}"
-                    def safeBranchName = env.BRANCH_NAME.toLowerCase().replaceAll('/', '-')
-                    def branchBuild = "${safeBranchName}-b${env.BUILD_NUMBER}"
                     def latestTag = 'latest'
 
                     def imageRef = "${env.DOCKER_IMAGE}:${shaTag}"
@@ -90,7 +88,6 @@ pipeline {
 
                             docker build \\
                                 --tag ${imageRef} \\
-                                --tag ${env.DOCKER_IMAGE}:${branchBuild} \\
                                 --tag ${env.DOCKER_IMAGE}:${latestTag} \\
                                 src/
 
@@ -112,7 +109,6 @@ pipeline {
                             http://localhost:5000/healthz
 
                             docker push ${imageRef}
-                            docker push ${env.DOCKER_IMAGE}:${branchBuild}
 
                             # Push 'latest' only from main
                             if [ "${env.BRANCH_NAME}" = "main" ]; then
