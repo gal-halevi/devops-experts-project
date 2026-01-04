@@ -123,9 +123,9 @@ pipeline {
         }
 
         stage("Deploy to Kubernetes") {
-            when {
-                branch 'main'
-            }
+            // when {
+            //     branch 'main'
+            // }
             agent {
                 label 'docker'
             }
