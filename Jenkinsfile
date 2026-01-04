@@ -127,7 +127,7 @@ pipeline {
                 branch 'main'
             }
             agent {
-                label 'Mac'
+                label 'docker'
             }
             steps {
                 checkout scm
