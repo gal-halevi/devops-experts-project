@@ -126,8 +126,12 @@ pipeline {
                         kubectl config current-context
                         kubectl get nodes
 
+                        helm repo add gal-halevi-helm https://gal-halevi.github.io/helm-charts
+                        helm repo update
+
                         helm upgrade --install counter-app ./chart/flask-counter \\
                             --namespace default --create-namespace \\
+                            --version 0.2.0 \\
                             --set image.repository=${env.DOCKER_IMAGE} \\
                             --set image.tag=${shaTag} \\
                             --wait --timeout 2m
