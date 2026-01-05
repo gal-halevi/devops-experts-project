@@ -16,10 +16,7 @@ pipeline {
     stages {
         stage("Tests") {
             agent {
-                docker {
-                    label 'docker'
-                    image 'python:3.12-slim'
-                }
+                label 'mac'
             }
             steps {
                 checkout scm
@@ -32,7 +29,7 @@ pipeline {
                     mkdir -p "$PIP_CACHE_DIR"
 
                     rm -rf .venv
-                    python -m venv .venv
+                    python3.12 -m venv .venv
                     . .venv/bin/activate
                     
                     python -m pip install -U pip
@@ -61,15 +58,8 @@ pipeline {
             }
         }
         stage("Build & Push Docker Image") {
-            when {
-                not { changeRequest() }
-            }
             agent {
-                docker {
-                    label 'docker'
-                    image 'docker:27-cli'
-                    args '-v /var/run/docker.sock:/var/run/docker.sock'
-                }
+                label 'mac'
             }
             steps {
                 checkout scm
@@ -101,12 +91,9 @@ pipeline {
                             trap cleanup EXIT
 
                             # Run container on an available port on host and check health endpoint
-                            cid=\$(docker run -d ${imageRef})
-
-                            # Curl from a helper container that shares the app container network
-                            docker run --rm --network container:\$cid curlimages/curl:8.17.0 \\
-                            -fsS --retry-connrefused --retry 5 \\
-                            http://localhost:5000/healthz
+                            cid=\$(docker run -d -p 0:5000 ${imageRef})
+                            hostPort=\$(docker port \$cid 5000/tcp | awk -F: 'NR==1 {print \$NF}')
+                            curl -fsS --retry-all-errors --retry 5 --retry-delay 1 "http://localhost:\$hostPort/healthz"
 
                             docker push ${imageRef}
 
@@ -127,7 +114,7 @@ pipeline {
             //     branch 'main'
             // }
             agent {
-                label 'docker'
+                label 'mac'
             }
             steps {
                 checkout scm
