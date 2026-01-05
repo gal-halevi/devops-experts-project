@@ -93,7 +93,7 @@ pipeline {
                             # Run container on an available port on host and check health endpoint
                             cid=\$(docker run -d -p 0:5000 ${imageRef})
                             hostPort=\$(docker port \$cid 5000/tcp | awk -F: 'NR==1 {print \$NF}')
-                            curl -fsS --retry-connrefused --retry 5 "http://localhost:\$hostPort/healthz"
+                            curl -fsS --retry-connrefused --retry 5 --retry-delay 1 "http://localhost:\$hostPort/healthz"
 
                             docker push ${imageRef}
 
