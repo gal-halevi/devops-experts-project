@@ -117,7 +117,6 @@ pipeline {
                 label 'mac'
             }
             steps {
-                checkout scm
                 script {
                     def shaTag = "sha-${env.GIT_COMMIT.take(7)}"
                     sh """
@@ -129,7 +128,7 @@ pipeline {
                         helm repo add gal-halevi-helm https://gal-halevi.github.io/helm-charts
                         helm repo update
 
-                        helm upgrade --install counter-app ./chart/flask-counter \\
+                        helm upgrade --install counter-app gal-halevi-helm/flask-counter \\
                             --namespace default --create-namespace \\
                             --version 0.2.0 \\
                             --set image.repository=${env.DOCKER_IMAGE} \\
