@@ -30,9 +30,9 @@ The project uses a **Jenkins Multibranch Pipeline**.
 
 ### Pipeline behavior by branch
 
-| Branch         | Tests | Build Image | Push Image              | Deploy |
+| Branch         | Tests | Build Image | validate & push Image              | Deploy |
 |----------------|-------|-------------|-------------------------|--------|
-| Feature branch | ✅    | ✅          | ✅ (SHA tag)            | ❌     |
+| feature/bugfix branch | ✅    | ✅          | ✅ (SHA tag)            | ❌     |
 | main branch    | ✅    | ✅          | ✅ (SHA + latest)       | ✅     |
 
 ### Key points
