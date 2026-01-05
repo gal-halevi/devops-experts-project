@@ -48,9 +48,9 @@ The project uses a **Jenkins Multibranch Pipeline**.
 The pipeline is designed to run on a **single Jenkins agent**, executing all stages locally.
 
 The Jenkins agent must have the following tools installed:
-
+- Java (OpenJDK 11 or newer)
 - Python 3
-- Docker
+- Docker (with permission to access the daemon)
 - Helm
 - kubectl
 - Access to a local Kubernetes cluster (for example: minikube)
