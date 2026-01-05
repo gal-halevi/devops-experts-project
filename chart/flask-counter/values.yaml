@@ -1,0 +1,36 @@
+replicaCount: 1
+
+container:
+  port: 5000
+
+image:
+  repository: galhalevi/counter-app
+  tag: "1.2"
+  pullPolicy: IfNotPresent
+
+service:
+  type: NodePort
+  port: 80
+
+configMap:
+  data:
+    COUNTER_PATH: "/data/counter.txt"
+
+secret:
+  adminToken: "super-duper-secret"
+
+cronjob:
+  enabled: true
+  schedule: "* * * * *" # every minute
+
+autoscaling:
+  enabled: true
+  minReplicas: 1
+  maxReplicas: 5
+  averageUtilization: 50
+
+resources:
+  requests:
+    cpu: 50m
+  limits:
+    cpu: 200m

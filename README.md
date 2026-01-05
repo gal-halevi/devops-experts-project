@@ -1,11 +1,12 @@
-# Counter App – Flask · Docker · Kubernetes
+# DevOps Experts – Final Project (Phase 3)
 
-A minimal Flask-based counter service used to demonstrate containerization and Kubernetes concepts:
+This repository contains a DevOps learning project focused on building a complete CI/CD flow:
 
-- Containerizing a Python Flask application using Docker
-- Deploying the application to a Kubernetes cluster (Minikube)
-- Using ConfigMaps, Secrets, Deployments, Services, Liveness/Readiness, CronJobs, and HPA
+- Application testing
+- Docker image build & push
+- Deployment to a local Kubernetes cluster using Helm
 
+The goal of **Phase 3** is to establish a solid, reproducible pipeline that can later be extended to deploy into a cloud-managed Kubernetes cluster with minimal changes.
 
 ---
 
@@ -13,39 +14,86 @@ A minimal Flask-based counter service used to demonstrate containerization and K
 
 ```
 .
-├── app/                 # Flask application + Dockerfile
-│   └── README.md        # How to build/run the Docker image locally
-│
-├── k8s/                 # Kubernetes manifests
-│   └── README.md        # How to deploy the app on Minikube
-└── README.md            # High-level overview (this file)
+├── Jenkinsfile            # CI/CD pipeline definition
+├── src/                   # Application source code
+├── tests/                 # Pytest-based test suite
+├── chart/                 # Helm chart (source of truth for deployment)
+├── k8s/                   # Deprecated raw Kubernetes manifests (reference)
+└── README.md              # Project overview (this file)
 ```
 
 ---
 
+## 🔄 CI/CD Pipeline Overview
 
+The project uses a **Jenkins Multibranch Pipeline**.
 
-## 📝 Important Notes
+### Pipeline behavior by branch
 
-For learning purposes and for the sake of simplicity I decided to use
-### ⚠️ File-Based Counter
+| Branch         | Tests | Build Image | validate & push Image              | Deploy |
+|----------------|-------|-------------|-------------------------|--------|
+| feature/bugfix branch | ✅    | ✅          | ✅ (SHA tag)            | ❌     |
+| main branch    | ✅    | ✅          | ✅ (SHA + latest)       | ✅     |
 
+### Key points
 
+- Docker images are always tagged with an immutable `sha-<commit>` tag
+- The `latest` tag is pushed **only** from the `main` branch
+- Feature branches are used for validation and iteration
 
-This approach is **not concurrency-safe**, **not persistent across Pods**, and **not production-grade**.  
+---
 
+## 🧰 Jenkins Agent Requirements
 
-### ⚠️ Secret.yaml pushed to Git
+The pipeline is designed to run on a **single Jenkins agent**, executing all stages locally.
 
-This isn't best practice to say the least, and should be avoided.
-Secrets should be created with `kubectl create secret` or a secrets manager
+The Jenkins agent must have the following tools installed:
+- Java (OpenJDK 11 or newer)
+- Python 3
+- Docker (with permission to access the daemon)
+- Helm
+- kubectl
+- Access to a local Kubernetes cluster (for example: minikube)
+- A configured kubeconfig context pointing to the local cluster
+
+---
+
+## ☸️ Kubernetes Deployment (Phase 3)
+
+Deployment is performed using **Helm** against a **local Kubernetes cluster**.
+
+The pipeline deploys the application using:
+
+```bash
+helm upgrade --install counter-app ./chart/flask-counter \
+  --set image.repository=<repository> \
+  --set image.tag=sha-<commit>
+```
+
+Helm is the **supported and maintained deployment mechanism**.
+
+For details, see:
+- Helm chart documentation: [README.md](/chart/flask-counter/README.md)
+
+---
+
+## 🌿 Git Workflow
+
+This project follows a feature-branch workflow:
+
+- `main` is always deployable
+- All changes are developed in short-lived feature branches and merged via Pull Requests
+- CI validates changes on every branch before merging
+
+Branch naming (optional convention):
+- `feature/*` – new functionality
+- `bugfix/*` – non-urgent fixes
+- `hotfix/*` – urgent fixes
 
 ---
 
 ## 📚 Further Documentation
 
-- **App + Docker build and run instructions:**  
-  👉 [app/README.md](app/README.md)
-
-- **Kubernetes deployment instructions:**  
-  👉 [k8s/README.md](k8s/README.md)
+- Application and Docker usage: [/src/README.md](/src/README.md)
+- Helm chart details: [/chart/README.md](/chart/flask-counter/README.md)
+- Raw Kubernetes manifests (reference only): [/k8s/README.md](/k8s/README.md)
