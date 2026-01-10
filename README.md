@@ -65,7 +65,8 @@ Deployment is performed using **Helm** against a **local Kubernetes cluster**.
 The pipeline deploys the application using:
 
 ```bash
-helm upgrade --install counter-app ./chart/flask-counter \
+helm upgrade --install counter-app gal-halevi-helm/flask-counter \
+  --version 0.2.0
   --set image.repository=<repository> \
   --set image.tag=sha-<commit>
 ```
